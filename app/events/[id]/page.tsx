@@ -17,7 +17,7 @@ import { recommendSimilarEvents } from "../../../utils/recommendationUtils";
 export default function EventDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const id = parseInt(params.id, 10);
+  const id = parseInt(params.id as string, 10);
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [recommendedEvents, setRecommendedEvents] = useState<Event[]>([]);
@@ -167,7 +167,7 @@ export default function EventDetailsPage() {
           </Typography>
           <Grid container spacing={2}>
             {recommendedEvents.map((recommendedEvent) => (
-              <Grid item xs={12} sm={6} md={4} key={recommendedEvent.id}>
+              <Box key={recommendedEvent.id}>
                 <Card
                   sx={{
                     background: "rgba(255, 255, 255, 0.5)",
@@ -191,7 +191,7 @@ export default function EventDetailsPage() {
                     📍 {recommendedEvent.location}
                   </Typography>
                 </Card>
-              </Grid>
+              </Box>
             ))}
           </Grid>
         </Box>

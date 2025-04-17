@@ -15,8 +15,9 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 
-interface AddEventModalProps {
+export interface AddEventModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (eventData: {
@@ -64,7 +65,9 @@ export default function AddEventModal({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name!]: value }));

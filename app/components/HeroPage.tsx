@@ -17,6 +17,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 import EventCard from "./EventCard";
 import AddEventButton from "./AddEventButton";
 import AddEventModal from "./AddEventModal";
@@ -55,10 +56,8 @@ export default function HeroPage() {
       (selectedCategory === "All" || event.category === selectedCategory)
   );
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setSelectedCategory(event.target.value as string);
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    setSelectedCategory(event.target.value);
   };
 
   const handleAddEvent = (eventData: Omit<Event, "id" | "date">) => {
@@ -78,8 +77,25 @@ export default function HeroPage() {
       });
   };
 
-  const handleEditEvent = (eventData: Event) => {
-    editEvent(eventData)
+  const handleEditEvent = (eventData: {
+    id?: number;
+    title: string;
+    location: string;
+    category: string;
+    description: string;
+  }) => {
+    if (!eventData.id) {
+      console.error("Event ID is missing.");
+      return;
+    }
+
+    const updatedEvent: Event = {
+      ...eventData,
+      id: eventData.id, // Ensure id is defined
+      date: events.find((event) => event.id === eventData.id)?.date || "",
+    };
+
+    editEvent(updatedEvent)
       .then((updatedEvent) => {
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
@@ -93,7 +109,6 @@ export default function HeroPage() {
         toast.error("Failed to update event.");
       });
   };
-
   const openEditModal = (event: Event) => {
     setEventToEdit(event);
     setEditEventModalOpen(true);
@@ -258,7 +273,13 @@ export default function HeroPage() {
           open={editEventModalOpen}
           onClose={() => setEditEventModalOpen(false)}
           onSubmit={handleEditEvent}
-          initialData={eventToEdit}
+          initialData={{
+            id: eventToEdit.id,
+            title: eventToEdit.title,
+            location: eventToEdit.location,
+            category: eventToEdit.category,
+            description: eventToEdit.description,
+          }}
         />
       )}
 
